@@ -1,0 +1,40 @@
+version: "3.7"
+
+
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+
+    command: >
+      bash -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app:/app/app
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    image : mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=test
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=1234
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    command:  --port 3306
+
+
+  redis:
+    image : redis
+    ports:
+      - 6379:6379
+
+
